@@ -181,11 +181,10 @@ int readFromFileToScreen(char *fileName, int updateScore)
    // Sleep
    nanosleep(&reqDelay, (struct timespec *) NULL);
    
-   // Read string (line)
+	// Read string (line)
    const int MAX_LENGTH = 1024;
    char buff[MAX_LENGTH];
-   fgets(buff, MAX_LENGTH, pFile);
-   
+   fgets(buff, MAX_LENGTH, pFile);  
    result = strcmp(buff, str1);
    //printf("result: %d\n", result);
    
@@ -201,6 +200,19 @@ int readFromFileToScreen(char *fileName, int updateScore)
    
    // Close
    fclose(pFile);
+
+   do
+   {
+	  FILE *pFile = fopen(fileName, "r");
+	  fgets(buff, MAX_LENGTH, pFile);
+	  result = strcmp(buff, str1);
+	  if(result == 1)
+	  {
+		  fclose(pFile);
+		  break;
+	  }
+	  fclose(pFile);
+   } while(1);
 
    //printf("Read: '%s'\n", buff);
    
@@ -268,8 +280,6 @@ int main(int argc, char* args[]) {
 	   {
 		turnOnUpLed(SECOND_TRIGGER_FILE_NAME_HERE, DA_TRIGGER_FILE_NAME_HERE);
 		score = readFromFileToScreen(JOYSTICK_PRESSED_UP, score);
-		readFromFileToExit(JOYSTICK_PRESSED_LEFT, score, rounds);
-		readFromFileToExit(JOYSTICK_PRESSED_RIGHT, score, rounds);
 	   }
 
 	   
@@ -277,12 +287,12 @@ int main(int argc, char* args[]) {
 	   {
 		turnOnDownLed(DA_TRIGGER_FILE_NAME_HERE, SECOND_TRIGGER_FILE_NAME_HERE);
 		score = readFromFileToScreen(JOYSTICK_PRESSED_DOWN, score);
-		readFromFileToExit(JOYSTICK_PRESSED_LEFT, score, rounds);
-		readFromFileToExit(JOYSTICK_PRESSED_RIGHT, score, rounds);
 	   }
 	    
 	   rounds++;
 	   printf("Press joystick; Score: (%d / %d)\n", score, rounds);
+	   readFromFileToExit(JOYSTICK_PRESSED_LEFT, score, rounds);
+	   readFromFileToExit(JOYSTICK_PRESSED_RIGHT, score, rounds);
    }
    return 0;
 }
