@@ -1,0 +1,57 @@
+ifconfig
+eth0: flags=-28669<UP,BROADCAST,MULTICAST,DYNAMIC>  mtu 1500
+        ether 30:e2:83:e0:aa:43  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 182  
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 1600  bytes 109440 (106.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1600  bytes 109440 (106.8 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+usb0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.7.2  netmask 255.255.255.252  broadcast 192.168.7.3
+        inet6 fe80::32e2:83ff:fee0:aa45  prefixlen 64  scopeid 0x20<link>
+        ether 30:e2:83:e0:aa:45  txqueuelen 1000  (Ethernet)
+        RX packets 54  bytes 6999 (6.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 36  bytes 8251 (8.0 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+usb1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.6.2  netmask 255.255.255.252  broadcast 192.168.6.3
+        inet6 fe80::32e2:83ff:fee0:aa48  prefixlen 64  scopeid 0x20<link>
+        ether 30:e2:83:e0:aa:48  txqueuelen 1000  (Ethernet)
+        RX packets 54  bytes 6999 (6.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 45  bytes 7895 (7.7 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+debian@beaglebone:~$ ifconfig[4Pexitcd ~[2Plscd remote/ls[Kcd /remotels[Kcd /mnt./mountNFS.shsudo umount /mnt/remote[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cls[Ksudo umount /mnt/remote[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[10P./mountNFS.sh[6Pcd /mntls[Kcd /remotels[Kcd remote/ls[Kcd ~exitifconfig[Kifconfig[4Pexitcd ~[2Plscd remote/ls[Kcd /remotels[Kcd /mnt./mountNFS.shsudo umount /mnt/remote[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cls[K./mountNFS.shls[Kifconfigping 192.168.7.12ls[K./mountNFS.sh ls[Kcd ~[2Plscd bin[4Plsexitkillquitcd ~./helloworld_hostls[Kping[K[K[K[K[K[Kping 192.168.7.1
+PING 192.168.7.1 (192.168.7.1) 56(84) bytes of data.
+64 bytes from 192.168.7.1: icmp_seq=1 ttl=64 time=2.54 ms
+64 bytes from 192.168.7.1: icmp_seq=2 ttl=64 time=2.22 ms
+64 bytes from 192.168.7.1: icmp_seq=3 ttl=64 time=2.10 ms
+^C
+--- 192.168.7.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 2.108/2.289/2.540/0.187 ms
+debian@beaglebone:~$ exit
+logout
+
+Debian GNU/Linux 9 beaglebone ttyS0
+
+BeagleBoard.org Debian Image 2018-01-28
+
+Support/FAQ: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+beaglebone login: 

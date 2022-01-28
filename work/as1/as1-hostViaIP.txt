@@ -1,0 +1,81 @@
+avneet@avneet-VirtualBox:~$ ifconfig
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::7d5c:3ab5:3c5e:7395  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:74:19:51  txqueuelen 1000  (Ethernet)
+        RX packets 653  bytes 366409 (366.4 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 732  bytes 94213 (94.2 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enx30e283e0aa44: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.7.1  netmask 255.255.255.252  broadcast 192.168.7.3
+        inet6 fe80::1a37:dfe9:77e6:d4bb  prefixlen 64  scopeid 0x20<link>
+        ether 30:e2:83:e0:aa:44  txqueuelen 1000  (Ethernet)
+        RX packets 62  bytes 9215 (9.2 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 80  bytes 14744 (14.7 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enx30e283e0aa47: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.6.1  netmask 255.255.255.252  broadcast 192.168.6.3
+        inet6 fe80::7b8a:7262:22f5:7aa2  prefixlen 64  scopeid 0x20<link>
+        ether 30:e2:83:e0:aa:47  txqueuelen 1000  (Ethernet)
+        RX packets 68  bytes 10337 (10.3 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 78  bytes 11267 (11.2 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 484  bytes 43118 (43.1 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 484  bytes 43118 (43.1 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+avneet@avneet-VirtualBox:~$ ping 192.168.7.2
+PING 192.168.7.2 (192.168.7.2) 56(84) bytes of data.
+64 bytes from 192.168.7.2: icmp_seq=1 ttl=64 time=1.89 ms
+64 bytes from 192.168.7.2: icmp_seq=2 ttl=64 time=1.69 ms
+64 bytes from 192.168.7.2: icmp_seq=3 ttl=64 time=1.74 ms
+^C
+--- 192.168.7.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2013ms
+rtt min/avg/max/mdev = 1.687/1.771/1.885/0.083 ms
+avneet@avneet-VirtualBox:~$ ssh debian@192.168.7.2
+debian@192.168.7.2's password: 
+Linux beaglebone 4.9.78-ti-r94 #1 SMP PREEMPT Fri Jan 26 21:26:24 UTC 2018 armv7l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue May  8 06:15:53 2018
+debian@beaglebone:~$ cat version
+cat: version: No such file or directory
+debian@beaglebone:~$ cat uptime
+cat: uptime: No such file or directory
+debian@beaglebone:~$ cd /proc
+debian@beaglebone:/proc$ cat version
+Linux version 4.9.78-ti-r94 (root@b2-am57xx-beagle-x15-2gb) (gcc version 6.3.0 20170516 (Debian 6.3.0-18) ) #1 SMP PREEMPT Fri Jan 26 21:26:24 UTC 2018
+debian@beaglebone:/proc$ cat uptime
+1605.95 1511.92
+debian@beaglebone:/proc$ cat cpuinfo
+processor	: 0
+model name	: ARMv7 Processor rev 2 (v7l)
+BogoMIPS	: 995.32
+Features	: half thumb fastmult vfp edsp thumbee neon vfpv3 tls vfpd32 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x3
+CPU part	: 0xc08
+CPU revision	: 2
+
+Hardware	: Generic AM33XX (Flattened Device Tree)
+Revision	: 0000
+Serial		: 0000000000000000
+debian@beaglebone:/proc$ 

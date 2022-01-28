@@ -1,0 +1,161 @@
+
+U-Boot SPL 2018.01-00002-gbbdeb63-dirty (May 08 2018 - 15:14:23)
+Trying to boot from MMC2
+
+
+U-Boot 2018.01-00002-gbbdeb63-dirty (May 08 2018 - 15:14:23 +0800)
+
+CPU  : AM335X-GP rev 2.1
+I2C:   ready
+DRAM:  512 MiB
+No match for driver 'omap_hsmmc'
+No match for driver 'omap_hsmmc'
+Some drivers were not found
+Reset Source: Global external warm reset has occurred.
+Reset Source: Power-on reset has occurred.
+TPS65217: PGDLY 400 ms -> 400 ms
+MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1
+Using default environment
+
+Board: BeagleBone Black
+<ethaddr> not set. Validating first E-fuse MAC
+BeagleBone Black:
+Model: SeeedStudio BeagleBone Green:
+BeagleBone: found invalid cape eeprom: i2c_probe: 0x54:
+BeagleBone: cape eeprom: i2c_probe: 0x55:
+BeagleBone: cape eeprom: i2c_probe: 0x56:
+BeagleBone: cape eeprom: i2c_probe: 0x57:
+Net:   eth0: MII MODE
+cpsw, usb_ether
+Press SPACE to abort autoboot in 2 seconds
+board_name=[BBG1] ...
+Card did not respond to voltage select!
+mmc_init: -95, time 12
+Card did not respond to voltage select!
+mmc_init: -95, time 13
+Card did not respond to voltage select!
+mmc_init: -95, time 13
+gpio: pin 56 (gpio 56) value is 0
+gpio: pin 55 (gpio 55) value is 0
+gpio: pin 54 (gpio 54) value is 0
+gpio: pin 53 (gpio 53) value is 1
+Card did not respond to voltage select!
+mmc_init: -95, time 12
+Card did not respond to voltage select!
+mmc_init: -95, time 13
+switch to partitions #0, OK
+mmc1(part 0) is current device
+Scanning mmc 1:1...
+gpio: pin 56 (gpio 56) value is 0
+gpio: pin 55 (gpio 55) value is 0
+gpio: pin 54 (gpio 54) value is 0
+gpio: pin 53 (gpio 53) value is 1
+switch to partitions #0, OK
+mmc1(part 0) is current device
+gpio: pin 54 (gpio 54) value is 1
+Checking for: /uEnv.txt ...
+Checking for: /boot.scr ...
+Checking for: /boot/boot.scr ...
+Checking for: /boot/uEnv.txt ...
+gpio: pin 55 (gpio 55) value is 1
+2061 bytes read in 15 ms (133.8 KiB/s)
+Loaded environment from /boot/uEnv.txt
+Checking if uname_r is set in /boot/uEnv.txt...
+gpio: pin 56 (gpio 56) value is 1
+Running uname_boot ...
+loading /boot/vmlinuz-4.9.78-ti-r94 ...
+9960536 bytes read in 646 ms (14.7 MiB/s)
+uboot_overlays: [uboot_base_dtb=am335x-boneblack-uboot.dtb] ...
+uboot_overlays: Switching too: dtb=am335x-boneblack-uboot.dtb ...
+loading /boot/dtbs/4.9.78-ti-r94/am335x-boneblack-uboot.dtb ...
+61626 bytes read in 43 ms (1.4 MiB/s)
+uboot_overlays: [fdt_buffer=0x60000] ...
+uboot_overlays: loading /lib/firmware/M-BB-BBG-00A0.dtbo ...
+277 bytes read in 214 ms (1000 Bytes/s)
+uboot_overlays: loading /lib/firmware/BB-BONE-eMMC1-01-00A0.dtbo ...
+1105 bytes read in 47 ms (22.5 KiB/s)
+uboot_overlays: loading /lib/firmware/BB-ADC-00A0.dtbo ...
+695 bytes read in 229 ms (2.9 KiB/s)
+uboot_overlays: loading /lib/firmware/univ-bbb-Exx-00A0.dtbo ...
+105020 bytes read in 310 ms (330.1 KiB/s)
+loading /boot/initrd.img-4.9.78-ti-r94 ...
+6300596 bytes read in 413 ms (14.5 MiB/s)
+debug: [console=ttyO0,115200n8 bone_capemgr.uboot_capemgr_enabled=1 root=/dev/mmcblk1p1 ro rootfstype=ext4 rootwait coherent_pool=1M net.ifnames=0 quiet] ...
+debug: [bootz 0x82000000 0x88080000:6023b4 88000000] ...
+## Flattened Device Tree blob at 88000000
+   Booting using the fdt blob at 0x88000000
+   Loading Ramdisk to 8f9fd000, end 8ffff3b4 ... OK
+   reserving fdt memory region: addr=88000000 size=88000
+   Loading Device Tree to 8f972000, end 8f9fcfff ... OK
+
+Starting kernel ...
+
+[    0.002615] clocksource_probe: no matching clocksources found
+[    1.509047] wkup_m3_ipc 44e11324.wkup_m3_ipc: could not get rproc handle
+[    1.843034] omap_voltage_late_init: Voltage driver support not added
+[    1.850675] PM: Cannot get wkup_m3_ipc handle
+[    1.958914] PM: Cannot get wkup_m3_ipc handle
+
+  ___                        _   _      __________________ 
+ / _\                      | | ( )     | ___\ ___\ ___\
+/ /_\\_   ___ __   ___  ___| |_|/ ___  | |_/ / |_/ / |_/ /
+|  _ \\ / / '_ \/ _\/ _\ __| / __| | ___\ ___\ ___\
+| | | |\V /| | | |  __/  __/ |_  \_\ | |_/ / |_/ / |_/ /
+\| |_/ \/ |_| |_|\__|\__\__| |___/ \___/\___/\___/ 
+                                                           
+                                                           
+Today is Tue May 8  2018 06:08:05 @ ass38-beagle
+ass38-beagle login: debian
+Password: 
+Last login: Tue May  8 06:08:29 UTC 2018 from 192.168.7.1 on pts/0
+Linux ass38-beagle 4.9.78-ti-r94 #1 SMP PREEMPT Fri Jan 26 21:26:24 UTC 2018 armv7l
+ _   _ _   
+| | | (_)  
+| |_| |_   
+|  _  | |  
+| | | | |_ 
+\\| |_/_( )
+        |/ 
+  ___   _____  _____    ___ 
+ / _\\ /  ___||  _  |  /   |
+/ /_\\\\ `--. | |_| | / /| |
+|  _  | `--. \\____ |/ /_| |
+| | | |/\\_/ /.___/ /\\__  |
+\\| |_/\\___/ \\___/     |_/
+                            
+                            
+
+
+Hello embedded world, from Avneet!
+Press the Zen cape's Joystick in the direction of the LED.
+UP for LED0 (top)
+DOWN for LED3 (bottom)
+LEFT/RIGHT for exit app
+Press joystick; Score: (0 / 0)
+Incorrect :(
+Press joystick; Score: (0 / 1)
+Correct!
+Press joystick; Score: (1 / 2)
+Correct!
+Press joystick; Score: (2 / 3)
+Correct!
+Press joystick; Score: (3 / 4)
+Incorrect :(
+Press joystick; Score: (3 / 5)
+Correct!
+Press joystick; Score: (4 / 6)
+Correct!
+Press joystick; Score: (5 / 7)
+Incorrect :(
+Press joystick; Score: (5 / 8)
+Your final score was (5 / 8)
+Thank you for playing!
+debian@ass38-beagle:~$ ls
+bin  hello  mountNFS.sh
+debian@ass38-beagle:~$ ./mountNFS.sh 
+sudo: unable to resolve host ass38-beagle: No such file or directory
+[sudo] password for debian: 
+debian@ass38-beagle:~$ cd /mnt/remote/myApps/
+debian@ass38-beagle:/mnt/remote/myApps$ ls
+hello
+debian@ass38-beagle:/mnt/remote/myApps$ 
