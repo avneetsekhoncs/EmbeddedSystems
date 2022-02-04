@@ -1,6 +1,7 @@
 # embeddedsystems
 
 Public folder - Files on target
+
 Work folder - Files on Host
   
   1. As1: Build Environment
