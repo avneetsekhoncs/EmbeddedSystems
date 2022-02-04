@@ -2,7 +2,7 @@
 
 Public folder - Files on target
 
-Work folder - Files on Host
+Work folder - Files on Host (All assignments in this folder)
   
   1. As1: Build Environment
    
