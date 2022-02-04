@@ -3,6 +3,7 @@
 Public folder - Files on target
 Work folder - Files on Host
   1. As1
+   
     - Part 1 - Establish Communication
       Setup a Linux machine (or virtual machine) for doing your work this semester.
       Have the target communicating with the host via the serial port using screen.
