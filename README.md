@@ -2,7 +2,8 @@
 
 Public folder - Files on target
 Work folder - Files on Host
-  1. As1
+  
+  1. As1: Build Environment
    
     - Part 1 - Establish Communication
       Setup a Linux machine (or virtual machine) for doing your work this semester.
@@ -24,4 +25,12 @@ Work folder - Files on Host
       compile and deploy (place executable to the myApps/ folder) using the following single
       command: (host)$ make
   
-  2. As2
+  2. As2: Light Dip Detector
+    
+    - Part 1 - Write "light_sampler" Program
+      Use a light sensor to read the ambient light level in the room
+      Use the Zen cape's potentiometer to control how many data samples of history to keep
+      Use the Zen cape’s 2-character (14-segment display) to display the number of dips in the
+      light intensity seen in the sample history.
+      Display some information each second to the terminal.
+      Listen to a UDP socket and respond to commands
