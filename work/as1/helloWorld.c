@@ -19,6 +19,8 @@
 #define JOYSTICK_PRESSED_LEFT "/sys/class/gpio/gpio65/value"
 #define JOYSTICK_PRESSED_RIGHT "/sys/class/gpio/gpio47/value"
 
+//as1
+
 
 // Brightness off
 void brightnessClose(char *fileName)
