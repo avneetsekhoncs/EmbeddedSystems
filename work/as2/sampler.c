@@ -5,79 +5,153 @@
 #include <time.h>
 
 #include "potDriver.h"
-#include "circbuff.h"
 
+#define MAX_SIZE 100
 #define A2D_VOLTAGE_REF_V 1.8
 #define A2D_MAX_READING 4095
+#define DSP_EMA_I32_ALPHA(x) ((double)(x * 65535)) // taken from: https://www.embeddedrelated.com/showcode/304.php
 
-static pthread_t tid; // Thread ID
-static long long totalRuns = 0;
+static pthread_t tid;
+static double *buff_array;
+static int history_size;
+static int nextId = 0;
+static bool sample = true;
+static long long sum = 0;
+static double average = 0;
 
-void Sampler_setHistorySize(int newSize)
-{
-    //might have to build struct in circbuff.c and write into it
-}
-
-
+// Count Command
 long long Sampler_getNumSamplesTaken(void)
 {
-    totalRuns+=1; 
-    return totalRuns;
+    printf("Sum is %lld\n", sum);
+    return sum;
 }
 
-
-// Thread function to generate sum of 0 to N
-void *sum_runner(void *arg)
+double dsp_ema_i32(double in, double average, double alpha) // Taken from: https://www.embeddedrelated.com/showcode/304.php
 {
-    long long *limit_ptr = (long long *)arg;
-    long long limit = *limit_ptr;
+    double tmp0;
+    tmp0 = (double)in * (alpha) + (double)average * (65536 - alpha);
+    return (double)((tmp0 + 32768) / 65536);
+}
+
+double Sampler_getAverageReading(void) // Taken from: https://www.embeddedrelated.com/showcode/304.php
+{
+    double adc_value;
+    adc_value = getVoltage0Reading();
+    average = dsp_ema_i32(adc_value, average, DSP_EMA_I32_ALPHA(0.1));
+    return average;
+}
+
+// Length command: "Currently holding __ samples."
+// int Sampler_getNumSamplesInHistory()
+// {
+// What is considered a valid sample???
+// }
+
+// History Command
+double *Sampler_getHistory(int length) // with *length you're supposed to pass in the old array and use that to get that length
+{
+
+    double *copy_array = (double *)malloc(sizeof(double) * (length + 1));
+
+    // if (length < MAX_SIZE) // This is wrong, comparing the same thing
+    // {
+    //     copy_array = (double *)malloc(sizeof(double) * (length + 1)); // adjust for most recent items
+    // }
+    // if (length > MAX_SIZE) // This is wrong, comparing the same thing
+    // {
+    //     copy_array = (double *)malloc(sizeof(double) * (length + 1)); // adjust for all N  samples + more
+    // }
+
+    for (int i = 0; i < length; i++)
+    {
+        copy_array[i] = buff_array[i];
+    }
+
+    for (int i = 0; i < length; i++)
+    {
+        printf("Value %5.3fV, ", (double)copy_array[i]);
+    }
+
+    printf("\n");
+
+    return copy_array;
+}
+
+// Length Command: "History can hold __ samples."
+int Sampler_getHistorySize(void)
+{
+    printf("History can hold %d samples\n", history_size);
+    return history_size;
+}
+
+// Set size of history (circular buffer)
+void Sampler_setHistorySize(int newSize)
+{
+    buff_array = (double *)malloc(sizeof(double) * (newSize + 1));
+    history_size = newSize;
+
+    if (buff_array == NULL)
+    {
+        printf("Malloc failed!\n");
+        exit(1);
+    }
+}
+
+// Run Sampler
+void *Sampler_runner(void *arg)
+{
     long seconds = 0;
     long nanoseconds = 1000000;
-    long long i = 0;
+    struct timespec reqDelay = {seconds, nanoseconds};
+
+    int *limit_ptr = (int *)arg;
+    int limit = *limit_ptr;
 
     free(arg);
 
-    struct timespec reqDelay = {seconds, nanoseconds};
+    int i = 0;
 
-    long long sum = 0;
-
-    while (i < limit)
+    while (sample)
     {
+
         int reading = getVoltage0Reading();
         double voltage = ((double)reading / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
-        printf("Value %5d ==> %5.2fV\n", reading, voltage);
+        buff_array[nextId] = voltage;
 
         nanosleep(&reqDelay, (struct timespec *)NULL);
 
-        sum = Sampler_getNumSamplesTaken();
+        nextId = (nextId + 1) % (limit - 1);
+
+        sum += 1;
         i++;
+        Sampler_getAverageReading();
     }
 
-    // Pass back data in dynamically allocated memory
-    long long *answer = malloc(sizeof(*answer));
+    double *answer = malloc(sizeof(*answer));
     *answer = sum;
-
     pthread_exit(answer);
 }
 
-//Stop the sampling thread
+// Join thread
 void Sampler_stopSampling(void)
 {
-    long long *result;
+    sample = false;
+    printf("Average: %f\n", average);
+    int *result;
     pthread_join(tid, (void **)&result);
-    printf("Sum is %lld\n", *result);
     free(result);
 }
 
-// Start the sampling thread
+// Create Thread
 void Sampler_startSampling(void)
 {
-    long long *limit = malloc(sizeof(*limit));
-    *limit = 5;
+    sample = true;
 
-    // Create attributes
+    int *limit = malloc(sizeof(*limit));
+    *limit = MAX_SIZE;
+
     pthread_attr_t attr;
     pthread_attr_init(&attr);
 
-    pthread_create(&tid, &attr, sum_runner, limit);
+    pthread_create(&tid, &attr, Sampler_runner, limit);
 }
