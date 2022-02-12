@@ -6,18 +6,20 @@
 
 #include "potDriver.h"
 
-#define MAX_SIZE 100
 #define A2D_VOLTAGE_REF_V 1.8
 #define A2D_MAX_READING 4095
-#define DSP_EMA_I32_ALPHA(x) ((double)(x * 65535)) // taken from: https://www.embeddedrelated.com/showcode/304.php
 
 static pthread_t tid;
 static double *buff_array;
+static double *copy_array;
+static double *adjust_array;
 static int history_size;
 static int nextId = 0;
 static bool sample = true;
 static long long sum = 0;
 static double average = 0;
+static double volt_value;
+static double weight_val;
 
 // Count Command
 long long Sampler_getNumSamplesTaken(void)
@@ -26,50 +28,49 @@ long long Sampler_getNumSamplesTaken(void)
     return sum;
 }
 
-double dsp_ema_i32(double in, double average, double alpha) // Taken from: https://www.embeddedrelated.com/showcode/304.php
+double Exp_smoothing(double volt, double average, double weight)
 {
-    double tmp0;
-    tmp0 = (double)in * (alpha) + (double)average * (65536 - alpha);
-    return (double)((tmp0 + 32768) / 65536);
+    double calc_average;
+    calc_average = (weight * volt) + ((1 - weight) * average);
+    return calc_average;
 }
 
-double Sampler_getAverageReading(void) // Taken from: https://www.embeddedrelated.com/showcode/304.php
+double Sampler_getAverageReading(void)
 {
-    double adc_value;
-    adc_value = getVoltage0Reading();
-    average = dsp_ema_i32(adc_value, average, DSP_EMA_I32_ALPHA(0.1));
+    volt_value = getVoltage1Reading();
+    average = Exp_smoothing(volt_value, average, weight_val);
+
     return average;
 }
 
 // Length command: "Currently holding __ samples."
-// int Sampler_getNumSamplesInHistory()
-// {
-// What is considered a valid sample???
-// }
+int Sampler_getNumSamplesInHistory()
+{
+    int validSamples = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        if (buff_array[i] > 0)
+        {
+            validSamples += 1;
+        }
+    }
+    printf("Currently holding %i samples.\n", validSamples);
+
+    return validSamples;
+}
 
 // History Command
-double *Sampler_getHistory(int length) // with *length you're supposed to pass in the old array and use that to get that length
+double *Sampler_getHistory(int length)
 {
 
-    double *copy_array = (double *)malloc(sizeof(double) * (length + 1));
-
-    // if (length < MAX_SIZE) // This is wrong, comparing the same thing
-    // {
-    //     copy_array = (double *)malloc(sizeof(double) * (length + 1)); // adjust for most recent items
-    // }
-    // if (length > MAX_SIZE) // This is wrong, comparing the same thing
-    // {
-    //     copy_array = (double *)malloc(sizeof(double) * (length + 1)); // adjust for all N  samples + more
-    // }
+    copy_array = (double *)malloc(sizeof(double) * (length + 1));
+    printf("Array Length: %i\n", length);
 
     for (int i = 0; i < length; i++)
     {
         copy_array[i] = buff_array[i];
-    }
-
-    for (int i = 0; i < length; i++)
-    {
-        printf("Value %5.3fV, ", (double)copy_array[i]);
+        //printf("Value %5.3fV, \n", (double)copy_array[i]);
     }
 
     printf("\n");
@@ -84,6 +85,39 @@ int Sampler_getHistorySize(void)
     return history_size;
 }
 
+void changeInHistorySize(int size)
+{
+    int pot_Size = getVoltage0Reading();
+
+    if (pot_Size < size)
+    {
+        adjust_array = (double *)malloc(sizeof(double) * (size + 1));
+        for (int i = 0; i < size; i++)
+        {
+            adjust_array[i] = buff_array[i];
+        }
+        buff_array = (double *)malloc(sizeof(double) * (pot_Size + 1));
+        for (int j = 0; j < pot_Size; j++)
+        {
+            buff_array[j] = adjust_array[j];
+        }
+    }
+
+    if (pot_Size > size)
+    {
+        adjust_array = (double *)malloc(sizeof(double) * (size + 1));
+        for (int i = 0; i < size; i++)
+        {
+            adjust_array[i] = buff_array[i];
+        }
+        buff_array = (double *)malloc(sizeof(double) * (pot_Size + 1));
+        for (int j = 0; j < size; j++)
+        {
+            buff_array[j] = adjust_array[j];
+        }
+    }
+}
+
 // Set size of history (circular buffer)
 void Sampler_setHistorySize(int newSize)
 {
@@ -95,6 +129,8 @@ void Sampler_setHistorySize(int newSize)
         printf("Malloc failed!\n");
         exit(1);
     }
+
+    changeInHistorySize(newSize);
 }
 
 // Run Sampler
@@ -110,11 +146,12 @@ void *Sampler_runner(void *arg)
     free(arg);
 
     int i = 0;
+    average = getVoltage1Reading();
 
     while (sample)
     {
 
-        int reading = getVoltage0Reading();
+        int reading = getVoltage1Reading();
         double voltage = ((double)reading / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
         buff_array[nextId] = voltage;
 
@@ -124,31 +161,29 @@ void *Sampler_runner(void *arg)
 
         sum += 1;
         i++;
+
         Sampler_getAverageReading();
     }
 
-    double *answer = malloc(sizeof(*answer));
-    *answer = sum;
-    pthread_exit(answer);
+    printf("Average: %f\n", average);
+
+    pthread_exit(0);
 }
 
 // Join thread
 void Sampler_stopSampling(void)
 {
     sample = false;
-    printf("Average: %f\n", average);
-    int *result;
-    pthread_join(tid, (void **)&result);
-    free(result);
+    pthread_join(tid, NULL);
 }
 
 // Create Thread
 void Sampler_startSampling(void)
 {
     sample = true;
-
+    int max_size = getVoltage0Reading();
     int *limit = malloc(sizeof(*limit));
-    *limit = MAX_SIZE;
+    *limit = max_size;
 
     pthread_attr_t attr;
     pthread_attr_init(&attr);

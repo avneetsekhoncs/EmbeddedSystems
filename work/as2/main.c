@@ -4,24 +4,27 @@
 #include <stdbool.h>
 
 #include "sampler.h"
+#include "potDriver.h"
 
-#define MAX_SIZE 100
-
+#define GET_HISTORY 10
 
 
 int main(int argc, char **argv)
 {
-    long seconds = 3;
+    long seconds = 4;
     long nanoseconds = 1000000;
     struct timespec reqDelay = {seconds, nanoseconds};
+    int volt_1_reading = getVoltage0Reading();
+    int length_size = GET_HISTORY;
 
-    Sampler_setHistorySize(20);
+    Sampler_setHistorySize(volt_1_reading);
     Sampler_getHistorySize();
     Sampler_startSampling();
-    Sampler_getHistory(MAX_SIZE);
 
     nanosleep(&reqDelay, (struct timespec *)NULL);
 
+    Sampler_getHistory(length_size);
+    Sampler_getNumSamplesInHistory();
     Sampler_stopSampling();
     Sampler_getNumSamplesTaken();
 }
