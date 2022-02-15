@@ -11,13 +11,13 @@
 
 int main(int argc, char **argv)
 {
-    long seconds = 4;
+    long seconds = 10;
     long nanoseconds = 1000000;
     struct timespec reqDelay = {seconds, nanoseconds};
-    int volt_1_reading = getVoltage0Reading();
+    int volt_0_reading = getVoltage0Reading();
     int length_size = GET_HISTORY;
 
-    Sampler_setHistorySize(volt_1_reading);
+    Sampler_setHistorySize(volt_0_reading);
     Sampler_getHistorySize();
     Sampler_startSampling();
 

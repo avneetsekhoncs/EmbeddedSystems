@@ -20,6 +20,9 @@ static long long sum = 0;
 static double average = 0;
 static double volt_value;
 static double weight_val;
+static int dipRecorded = 0;
+static int validSampleRecorded = 0;
+
 
 // Count Command
 long long Sampler_getNumSamplesTaken(void)
@@ -43,21 +46,36 @@ double Sampler_getAverageReading(void)
     return average;
 }
 
+
+
+void detect_dip(double lightLevel)
+{
+    double hysteresis = 0.03;
+
+    double average_voltage = ((double)average / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
+    lightLevel = ((double)lightLevel / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
+
+    if (lightLevel < (average_voltage - 0.1)) 
+    {
+        while(lightLevel < (average_voltage + hysteresis))
+        {
+            average = Sampler_getAverageReading();
+            average_voltage = ((double)average / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
+            double currentReading = getVoltage1Reading();
+            lightLevel = ((double)currentReading / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
+            printf("Light Level: %f, ", lightLevel);
+            printf("average volt: %f\n", average_voltage);
+        }  
+        dipRecorded++;
+    }
+}
+
 // Length command: "Currently holding __ samples."
 int Sampler_getNumSamplesInHistory()
 {
-    int validSamples = 0;
+    printf("Currently holding %i samples.\n", validSampleRecorded);
 
-    for (int i = 0; i < 10; i++)
-    {
-        if (buff_array[i] > 0)
-        {
-            validSamples += 1;
-        }
-    }
-    printf("Currently holding %i samples.\n", validSamples);
-
-    return validSamples;
+    return validSampleRecorded;
 }
 
 // History Command
@@ -139,7 +157,6 @@ void *Sampler_runner(void *arg)
     long seconds = 0;
     long nanoseconds = 1000000;
     struct timespec reqDelay = {seconds, nanoseconds};
-
     int *limit_ptr = (int *)arg;
     int limit = *limit_ptr;
 
@@ -150,7 +167,6 @@ void *Sampler_runner(void *arg)
 
     while (sample)
     {
-
         int reading = getVoltage1Reading();
         double voltage = ((double)reading / A2D_MAX_READING) * A2D_VOLTAGE_REF_V;
         buff_array[nextId] = voltage;
@@ -159,14 +175,19 @@ void *Sampler_runner(void *arg)
 
         nextId = (nextId + 1) % (limit - 1);
 
+        if (i < limit) {
+            validSampleRecorded++;
+        }
+
         sum += 1;
         i++;
 
         Sampler_getAverageReading();
+        detect_dip(reading);
     }
 
     printf("Average: %f\n", average);
-
+    printf("Dips recorded: %i\n", dipRecorded);
     pthread_exit(0);
 }
 
