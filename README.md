@@ -35,3 +35,8 @@ Work folder - Files on Host (All assignments in this folder)
       light intensity seen in the sample history.
       Display some information each second to the terminal.
       Listen to a UDP socket and respond to commands
+      
+    - Part 2 - Debug program "noworky"
+      Use gdbserver and the gdb cross-debugger to debug noworky.
+      Setup a graphical cross-debugger (such as Eclipse or VS Code). Use it to re-debug
+      noworky in a cross-debugging configuration (target device runs noworky, host runs the graphical debugger)
