@@ -6,25 +6,28 @@
 #include "sampler.h"
 #include "potDriver.h"
 
-#define GET_HISTORY 10
-
 
 int main(int argc, char **argv)
 {
-    long seconds = 10;
-    long nanoseconds = 1000000;
-    struct timespec reqDelay = {seconds, nanoseconds};
+    if (system("./i2c_commands.sh") != 0)
+    {
+        printf("Error executing command.\n");
+    }
+
     int volt_0_reading = getVoltage0Reading();
-    int length_size = GET_HISTORY;
+    bool status_check = get_status();
 
     Sampler_setHistorySize(volt_0_reading);
-    Sampler_getHistorySize();
     Sampler_startSampling();
 
-    nanosleep(&reqDelay, (struct timespec *)NULL);
+    while(1)
+    {
+        if(status_check == false)
+        {
+            break;
+        }
+        status_check = get_status();
+    }
 
-    Sampler_getHistory(length_size);
-    Sampler_getNumSamplesInHistory();
     Sampler_stopSampling();
-    Sampler_getNumSamplesTaken();
 }

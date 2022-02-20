@@ -17,33 +17,7 @@
 #define REG_OUTA 0x14
 #define REG_OUTB 0x15
 
-static int initI2cBus(char* bus, int address);
-static void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char value);
-static unsigned char readI2cReg(int i2cFileDesc, unsigned char regAddr);
-
-
-int main()
-{
-	printf("Drive display (assumes GPIO #61 and #44 are output and 1\n");
-	int i2cFileDesc = initI2cBus(I2CDRV_LINUX_BUS1, I2C_DEVICE_ADDRESS);
-
-	writeI2cReg(i2cFileDesc, REG_DIRA, 0x00);
-	writeI2cReg(i2cFileDesc, REG_DIRB, 0x00);
-
-	// Drive an hour-glass looking character (Like an X with a bar on top & bottom)
-	writeI2cReg(i2cFileDesc, REG_OUTA, 0x2A);
-	writeI2cReg(i2cFileDesc, REG_OUTB, 0x54);
-
-	// Read a register:
-	unsigned char regVal = readI2cReg(i2cFileDesc, REG_OUTA);
-	printf("Reg OUT-A = 0x%02x\n", regVal);
-
-	// Cleanup I2C access;
-	close(i2cFileDesc);
-	return 0;
-}
-
-static int initI2cBus(char* bus, int address)
+int initI2cBus(char* bus, int address)
 {
 	int i2cFileDesc = open(bus, O_RDWR);
 	if (i2cFileDesc < 0) {
@@ -60,7 +34,7 @@ static int initI2cBus(char* bus, int address)
 	return i2cFileDesc;
 }
 
-static void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char value)
+void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char value)
 {
 	unsigned char buff[2];
 	buff[0] = regAddr;
@@ -72,21 +46,119 @@ static void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char va
 	}
 }
 
-static unsigned char readI2cReg(int i2cFileDesc, unsigned char regAddr)
+void adjust_pattern(int currentDips)
 {
-	// To read a register, must first write the address
-	int res = write(i2cFileDesc, &regAddr, sizeof(regAddr));
-	if (res != sizeof(regAddr)) {
-		perror("Unable to write i2c register.");
-		exit(-1);
+	int i2cFileDesc = initI2cBus(I2CDRV_LINUX_BUS1, I2C_DEVICE_ADDRESS);
+
+	if(currentDips == 0)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0xA1); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x86); //Top Side
+		close(i2cFileDesc);
 	}
 
-	// Now read the value and return it
-	char value = 0;
-	res = read(i2cFileDesc, &value, sizeof(value));
-	if (res != sizeof(value)) {
-		perror("Unable to read i2c register");
-		exit(-1);
+	if(currentDips == 1)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0x80); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x12); //Top Side
+		close(i2cFileDesc);
 	}
-	return value;
+
+	if(currentDips == 2)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0x31); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x0E); //Top Side
+		close(i2cFileDesc);
+	}
+	
+	if(currentDips == 3)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0xB0); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x0E); //Top Side
+		close(i2cFileDesc);
+	}
+	
+	if(currentDips == 4)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0x90); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x8A); //Top Side
+		close(i2cFileDesc);
+	}
+
+	if(currentDips == 5)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0xB0); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x8C); //Top Side
+		close(i2cFileDesc);
+	}
+
+	if(currentDips == 6)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0xB1); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x8C); //Top Side
+		close(i2cFileDesc);
+	}
+
+	if(currentDips == 7)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0x04); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x14); //Top Side
+		close(i2cFileDesc);
+	}
+
+	if(currentDips == 8)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0xB1); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x8F); //Top Side
+		close(i2cFileDesc);
+	}
+
+	if(currentDips >= 9)
+	{
+		writeI2cReg(i2cFileDesc, REG_OUTA, 0x90); //Bottom Side
+		writeI2cReg(i2cFileDesc, REG_OUTB, 0x8F); //Top Side
+		close(i2cFileDesc);
+	}
+	
+	
+}
+
+void turn_off(char *fileName)
+{
+	//Write into gpio files and turn off
+	FILE *gpioFile = fopen(fileName, "w");
+
+	if (gpioFile == NULL) 
+	{
+		printf("ERROR OPENING %s.\n", fileName);
+		exit(1);
+	}
+
+	int charWritten = fprintf(gpioFile, "0");
+	if (charWritten <= 0) { 
+		printf("ERROR WRITING DATA\n");
+		exit(1);
+	}
+
+	fclose(gpioFile);
+}
+
+void turn_on(char *fileName)
+{
+	//Write into gpio files and turn off
+	FILE *gpioFile = fopen(fileName, "w");
+
+	if (gpioFile == NULL) 
+	{
+		printf("ERROR OPENING %s.\n", fileName);
+		exit(1);
+	}
+
+	int charWritten = fprintf(gpioFile, "1");
+	if (charWritten <= 0) { 
+		printf("ERROR WRITING DATA\n");
+		exit(1);
+	}
+
+	fclose(gpioFile);
 }

@@ -47,7 +47,7 @@ CC_C = $(CROSS_COMPILE)gcc
 
 # Indicate using POSIX standard (at least 2008+)
 CFLAGS = -Wall -g -std=c99 -D _POSIX_C_SOURCE=200809L -Werror -pthread
-SOURCES = main.c sampler.c potDriver.c
+SOURCES = main.c sampler.c potDriver.c segDisplay.c
 
 app:
 	$(CC_C) $(CFLAGS) $(SOURCES) -o $(OUTDIR)/$(OUTFILE)

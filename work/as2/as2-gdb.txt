@@ -1,0 +1,183 @@
+avneet@avneet-VirtualBox:~/cmpt433/work/as2$ gdb-multiarch -q noworky
+Reading symbols from noworky...
+(gdb) target remote 192.168.7.2:2001
+Remote debugging using 192.168.7.2:2001
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+warning: File transfers from remote targets can be slow. Use "set sysroot" to access files locally instead.
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+Reading symbols from target:/lib/ld-linux-armhf.so.3...
+Reading /lib/70015c44595ec80804b8d64a043df0d899dfae.debug from remote target...
+Reading /lib/.debug/70015c44595ec80804b8d64a043df0d899dfae.debug from remote target...
+Reading /usr/lib/debug//lib/70015c44595ec80804b8d64a043df0d899dfae.debug from remote target...
+Reading /usr/lib/debug/lib//70015c44595ec80804b8d64a043df0d899dfae.debug from remote target...
+Reading target:/usr/lib/debug/lib//70015c44595ec80804b8d64a043df0d899dfae.debug from remote target...
+(No debugging symbols found in target:/lib/ld-linux-armhf.so.3)
+0xb6fd7980 in ?? () from target:/lib/ld-linux-armhf.so.3
+(gdb) b 65
+Breakpoint 1 at 0x4006d4: file noworky.c, line 68.
+(gdb) cont
+Continuing.
+Reading /lib/arm-linux-gnueabihf/libc.so.6 from remote target...
+Reading /lib/arm-linux-gnueabihf/56da1a1f1ec6abc2396f88e61efb139d91c6dc.debug from remote target...
+Reading /lib/arm-linux-gnueabihf/.debug/56da1a1f1ec6abc2396f88e61efb139d91c6dc.debug from remote target...
+Reading /usr/lib/debug//lib/arm-linux-gnueabihf/56da1a1f1ec6abc2396f88e61efb139d91c6dc.debug from remote target...
+Reading /usr/lib/debug/lib/arm-linux-gnueabihf//56da1a1f1ec6abc2396f88e61efb139d91c6dc.debug from remote target...
+Reading target:/usr/lib/debug/lib/arm-linux-gnueabihf//56da1a1f1ec6abc2396f88e61efb139d91c6dc.debug from remote target...
+
+Breakpoint 1, main () at noworky.c:68
+68		printf("Initial values: \n");
+(gdb) local info
+Undefined command: "local".  Try "help".
+(gdb) info local
+i = 10
+source = 0x412410
+target = 0x412468
+(gdb) print *source@10
+$1 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print *target@10
+$2 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) next
+69		displayArrays(source, target, NUM_ELEMENTS);
+(gdb) 
+72		tradeArrays(source, target, NUM_ELEMENTS);
+(gdb) b 27
+Breakpoint 2 at 0x4005d2: file noworky.c, line 28.
+(gdb) cont
+Continuing.
+
+Breakpoint 2, tradeArrays (array1=0x412410, array2=0x412468, size=10)
+    at noworky.c:28
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$3 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print *array2@10
+$4 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$5 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print *array2@10
+$6 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print i
+$7 = 9
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$8 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 90}
+(gdb) print *array2@10
+$9 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 18}
+(gdb) print i
+$10 = 9
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$11 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 90}
+(gdb) print *array2@10
+$12 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 18}
+(gdb) print i
+$13 = 8
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$14 = {0, 2, 4, 6, 8, 10, 12, 14, 80, 90}
+(gdb) print *array2@10
+$15 = {0, 10, 20, 30, 40, 50, 60, 70, 16, 18}
+(gdb) print i
+$16 = 8
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$17 = {0, 2, 4, 6, 8, 10, 12, 14, 80, 90}
+(gdb) print *array2@10
+$18 = {0, 10, 20, 30, 40, 50, 60, 70, 16, 18}
+(gdb) print i
+$19 = 7
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$20 = {0, 2, 4, 6, 8, 10, 12, 70, 80, 90}
+(gdb) print *array2@10
+$21 = {0, 10, 20, 30, 40, 50, 60, 14, 16, 18}
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$22 = {0, 2, 4, 6, 8, 10, 12, 70, 80, 90}
+(gdb) print *array2@10
+$23 = {0, 10, 20, 30, 40, 50, 60, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$24 = {0, 2, 4, 6, 8, 10, 60, 70, 80, 90}
+(gdb) print *array2@10
+$25 = {0, 10, 20, 30, 40, 50, 12, 14, 16, 18}
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$26 = {0, 2, 4, 6, 8, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$27 = {0, 10, 20, 30, 40, 10, 12, 14, 16, 18}
+(gdb) print i
+$28 = 5
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$29 = {0, 2, 4, 6, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$30 = {0, 10, 20, 30, 8, 10, 12, 14, 16, 18}
+(gdb) print i
+$31 = 4
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$32 = {0, 2, 4, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$33 = {0, 10, 20, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print i
+$34 = 3
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) 
+29			swapContent(array1+i, array2+i);
+(gdb) 
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$35 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$36 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print i
+$37 = 1
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) print *array1@10
+$38 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$39 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print i
+$40 = 0
+(gdb) b 31
+Breakpoint 3 at 0x400602: file noworky.c, line 39.
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$41 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$42 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print i
+$43 = 4294967295
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 2598] will be killed.
+
+Quit anyway? (y or n) y
+

@@ -20,7 +20,7 @@ int Sampler_getHistorySize(void);
 // Note: provides both data and size to ensure consistency.
 //double* Sampler_getHistory(int *length); 
 double* Sampler_getHistory(int length); 
-
+bool get_status(void);
 
 // Returns how many valid samples are currently in the history.
 // May be less than the history size if the history is not yet full.
